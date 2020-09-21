@@ -6,7 +6,7 @@ class FavoritesController < ApplicationController
     if !Favorite.find_by(book_id: params[:book_id], user_id: current_user.id)
       @favorite = current_user.favorites.new(:book_id => params[:book_id])
       @favorite.save
-      redirect_to request.referer
+      # redirect_to request.referer
     end
   end
 
@@ -16,7 +16,7 @@ class FavoritesController < ApplicationController
     if Favorite.find_by(book_id: params[:book_id], user_id: current_user.id)
       @favorite = Favorite.find_by(user_id: current_user, book_id: params[:book_id])
       @favorite.destroy
-      redirect_to request.referer
+      # redirect_to request.referer
     end
   end
 end
