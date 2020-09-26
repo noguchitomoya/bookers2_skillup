@@ -18,34 +18,32 @@ class User < ApplicationRecord
 #   # フォローしている人
 #    has_many :relationships, foreign_key: "follower_id"
 #    has_many :followings, source: :followee
+has_many :follower, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy # ① フォローしている人取得(Userのfollowerから見た関係)
+has_many :followee, class_name: "Relationship", foreign_key: "followee_id", dependent: :destroy # ② フォローされている人取得(Userのfoloweeから見た関係)
+
+has_many :following_user, through: :follower, source: :followee # 自分がフォローしている人
+has_many :follower_user, through: :followee, source: :follower # 自分をフォローしている人(自分がフォローされている人)
 
 
-  has_many :active_relationships,  class_name:  "Relationship",
-  foreign_key: "follower_id",
-  dependent:   :destroy
-  has_many :passive_relationships, class_name:  "Relationship",
-  foreign_key: "followee_id",
-  dependent:   :destroy
-  has_many :followings, through: :active_relationships,  source: :followee
-  has_many :followers, through: :passive_relationships, source: :follower
   
   def following?(another_user)
-    self.followings.include?(another_user)
+    self.following_user.include?(another_user)
   end
 
   def follow(another_user)
     # unless self == another_user
-    #   self.relationships.find_or_create_by(followee_id: another_user.id)
+    #   self.follower.find_or_create_by(followee_id: another_user.id)
     # end
-    followings << another_user
+    follower.create(followee_id: another_user.id)
   end
   
   def unfollow(another_user)
     # unless self == another_user
-    #   relationship = self.relationships.find(followee_id: another_user.id)
-    #   relationship.destroy if relationship
+    #   follower = self.follower.find_by(followee_id: another_user.id)
+    #   follower.destroy if follower
     # end
-    active_relationships.find_by(followee_id: another_user.id).destroy
+  
+    follower.find_by(followee_id: another_user.id).destroy
   end
 
 end 

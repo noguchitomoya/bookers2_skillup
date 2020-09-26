@@ -12,8 +12,8 @@
       <tr>
         <td><%= attachment_image_tag(user, :profile_image, :fill, 50, 50, fallback: "no-image-icon.jpg") %></td>
         <td><%= user.name %></td>
-        <td>フォロワー数:<%= user.followers.count %></td>
-        <td>フォロー数:<%= user.followings.count %></td>
+        <td>フォロワー数:<%= user.follower_user.count %></td>
+        <td>フォロー数:<%= user.following_user.count %></td>
         <td>
           <% unless current_user == user %>
             <% if current_user.following?(user) %>
